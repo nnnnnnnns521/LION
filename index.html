@@ -1,0 +1,719 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>LION — Math Game</title>
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Baloo+2:wght@400;600;800&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --gold:    #F5A623;
+      --orange:  #E07B2A;
+      --green:   #4A7C2F;
+      --sky:     #87CEEB;
+      --brown:   #3B1F0A;
+      --cream:   #FFF8E7;
+      --red:     #C0392B;
+    }
+
+    body {
+      font-family: 'Baloo 2', cursive;
+      background: linear-gradient(180deg, var(--sky) 0%, #B8E0F7 30%, #F5D87A 60%, #E8A84C 100%);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      position: relative;
+    }
+
+    /* Savanna ground accent */
+    body::after {
+      content: '';
+      position: fixed;
+      bottom: 0; left: 0; right: 0;
+      height: 80px;
+      background: linear-gradient(180deg, transparent, #8B5E1A 100%);
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    /* Acacia silhouette */
+    body::before {
+      content: '';
+      position: fixed;
+      bottom: 70px; right: 30px;
+      width: 80px; height: 100px;
+      background: var(--brown);
+      clip-path: polygon(50% 100%, 44% 60%, 20% 55%, 35% 45%, 10% 30%, 38% 38%, 30% 15%, 50% 35%, 65% 5%, 62% 32%, 85% 22%, 70% 42%, 90% 38%, 62% 52%, 56% 60%);
+      pointer-events: none;
+      z-index: 0;
+      opacity: 0.6;
+    }
+
+    /* ── SCREENS ── */
+    .screen {
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      gap: 18px;
+      position: relative;
+      z-index: 1;
+      width: 100%;
+      max-width: 480px;
+      padding: 20px 16px;
+    }
+    .screen.active { display: flex; }
+
+    /* ── CARD ── */
+    .card {
+      background: rgba(255, 248, 231, 0.92);
+      border-radius: 24px;
+      padding: 28px 32px;
+      box-shadow: 0 8px 32px rgba(59,31,10,0.18);
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 16px;
+    }
+
+    /* ── TITLE ── */
+    .game-title {
+      font-family: 'Fredoka One', cursive;
+      font-size: 3.6rem;
+      color: var(--orange);
+      text-shadow: 3px 3px 0 var(--brown), -1px -1px 0 var(--gold);
+      letter-spacing: 6px;
+      line-height: 1;
+    }
+
+    /* ── SCORE ── */
+    .score-display {
+      font-size: 1.3rem;
+      font-weight: 800;
+      color: var(--brown);
+      background: var(--gold);
+      padding: 4px 18px;
+      border-radius: 999px;
+      border: 2px solid var(--orange);
+    }
+
+    /* ── SVG LION ── */
+    #lion-svg {
+      filter: drop-shadow(2px 4px 6px rgba(59,31,10,0.3));
+      transition: transform 0.2s;
+    }
+    #lion-svg.shake {
+      animation: shakeEl 0.5s ease;
+    }
+
+    /* ── LETTERS ── */
+    .lion-letters {
+      display: flex;
+      gap: 10px;
+    }
+    .lion-letter {
+      font-family: 'Fredoka One', cursive;
+      font-size: 2rem;
+      color: #ddd;
+      transition: color 0.3s, transform 0.3s;
+    }
+    .lion-letter.earned {
+      color: var(--orange);
+      transform: scale(1.15);
+      text-shadow: 1px 1px 0 var(--brown);
+    }
+
+    /* ── EQUATION ── */
+    .equation {
+      font-family: 'Fredoka One', cursive;
+      font-size: 2.6rem;
+      color: var(--brown);
+      text-align: center;
+      letter-spacing: 2px;
+    }
+
+    /* ── INPUT GROUP ── */
+    .input-group {
+      display: flex;
+      gap: 10px;
+      width: 100%;
+      justify-content: center;
+    }
+    input[type="number"] {
+      font-family: 'Baloo 2', cursive;
+      font-size: 1.5rem;
+      font-weight: 800;
+      width: 110px;
+      padding: 10px 14px;
+      border: 3px solid var(--orange);
+      border-radius: 14px;
+      background: white;
+      color: var(--brown);
+      text-align: center;
+      outline: none;
+      transition: border-color 0.2s, background 0.2s;
+      /* hide number spinners */
+      -moz-appearance: textfield;
+    }
+    input[type="number"]::-webkit-outer-spin-button,
+    input[type="number"]::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+    input[type="number"]:focus { border-color: var(--green); }
+    input[type="number"].flash-correct { animation: flashGreen 0.5s ease; }
+    input[type="number"].flash-wrong   { animation: shakeInput 0.5s ease; }
+
+    /* ── BUTTONS ── */
+    button {
+      font-family: 'Fredoka One', cursive;
+      font-size: 1.25rem;
+      padding: 11px 28px;
+      border: none;
+      border-radius: 14px;
+      cursor: pointer;
+      transition: transform 0.1s, box-shadow 0.1s;
+      box-shadow: 0 4px 0 rgba(59,31,10,0.25);
+    }
+    button:active { transform: translateY(2px); box-shadow: 0 2px 0 rgba(59,31,10,0.2); }
+
+    .btn-submit {
+      background: var(--green);
+      color: white;
+      letter-spacing: 1px;
+    }
+    .btn-play {
+      background: var(--orange);
+      color: white;
+      font-size: 1.6rem;
+      padding: 14px 48px;
+      letter-spacing: 2px;
+    }
+    .btn-play:hover { background: #cc6a1e; }
+
+    /* ── INSTRUCTIONS ── */
+    .instructions {
+      color: var(--brown);
+      font-size: 1rem;
+      font-weight: 600;
+      line-height: 1.6;
+      text-align: center;
+      max-width: 320px;
+    }
+
+    /* ── FLASH OVERLAYS ── */
+    .overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      z-index: 50;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+    }
+    .overlay.active { display: flex; }
+
+    .overlay-winner {
+      background: rgba(74, 124, 47, 0.92);
+    }
+    .overlay-lion {
+      background: rgba(59, 31, 10, 0.92);
+    }
+    .overlay-text {
+      font-family: 'Fredoka One', cursive;
+      font-size: 5rem;
+      color: white;
+      text-shadow: 3px 3px 0 rgba(0,0,0,0.3);
+      animation: pulseFlash 0.7s ease infinite alternate;
+    }
+    .overlay-sub {
+      font-size: 1.5rem;
+      font-weight: 800;
+      color: rgba(255,255,255,0.85);
+    }
+
+    /* ── CONFETTI ── */
+    #confetti-canvas {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 49;
+    }
+
+    /* ── ANIMATIONS ── */
+    @keyframes flashGreen {
+      0%   { background: white; }
+      40%  { background: #b8f5b0; border-color: var(--green); }
+      100% { background: white; }
+    }
+    @keyframes shakeInput {
+      0%   { transform: translateX(0);  background: white; }
+      20%  { transform: translateX(-8px); background: #ffd6d6; }
+      40%  { transform: translateX(8px); }
+      60%  { transform: translateX(-6px); }
+      80%  { transform: translateX(4px); }
+      100% { transform: translateX(0);  background: white; }
+    }
+    @keyframes shakeEl {
+      0%   { transform: translateX(0); }
+      20%  { transform: translateX(-10px); }
+      40%  { transform: translateX(10px); }
+      60%  { transform: translateX(-6px); }
+      80%  { transform: translateX(4px); }
+      100% { transform: translateX(0); }
+    }
+    @keyframes pulseFlash {
+      from { transform: scale(1);    opacity: 1; }
+      to   { transform: scale(1.07); opacity: 0.85; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- CONFETTI CANVAS -->
+<canvas id="confetti-canvas"></canvas>
+
+<!-- ═══════════════ HOME SCREEN ═══════════════ -->
+<div id="screen-home" class="screen active">
+  <div class="game-title">LION</div>
+
+  <div class="card">
+    <!-- SVG Lion (home — purely decorative, fully colored) -->
+    <svg id="lion-svg-home" viewBox="0 0 200 220" xmlns="http://www.w3.org/2000/svg" width="180" height="198">
+      <ellipse cx="100" cy="115" rx="72" ry="70" fill="#E07B2A" stroke="#3B1F0A" stroke-width="2.5"/>
+      <ellipse cx="100" cy="110" rx="48" ry="45" fill="#F5A623" stroke="#3B1F0A" stroke-width="2"/>
+      <g>
+        <ellipse cx="62" cy="72" rx="14" ry="16" fill="#F5A623" stroke="#3B1F0A" stroke-width="2"/>
+        <ellipse cx="138" cy="72" rx="14" ry="16" fill="#F5A623" stroke="#3B1F0A" stroke-width="2"/>
+        <ellipse cx="62" cy="73" rx="8" ry="9" fill="#FFDBA0" stroke="#3B1F0A" stroke-width="1"/>
+        <ellipse cx="138" cy="73" rx="8" ry="9" fill="#FFDBA0" stroke="#3B1F0A" stroke-width="1"/>
+      </g>
+      <g>
+        <ellipse cx="83" cy="103" rx="9" ry="8" fill="white" stroke="#3B1F0A" stroke-width="2"/>
+        <ellipse cx="117" cy="103" rx="9" ry="8" fill="white" stroke="#3B1F0A" stroke-width="2"/>
+        <circle cx="85" cy="104" r="4" fill="#3B1F0A"/>
+        <circle cx="119" cy="104" r="4" fill="#3B1F0A"/>
+        <circle cx="86" cy="103" r="1.5" fill="white"/>
+        <circle cx="120" cy="103" r="1.5" fill="white"/>
+        <ellipse cx="100" cy="122" rx="10" ry="7" fill="#3B1F0A" stroke="#3B1F0A" stroke-width="2"/>
+        <path d="M90 130 Q100 140 110 130" fill="none" stroke="#3B1F0A" stroke-width="2" stroke-linecap="round"/>
+        <line x1="100" y1="129" x2="100" y2="134" stroke="#3B1F0A" stroke-width="1.5"/>
+        <circle cx="76" cy="125" r="2" fill="#3B1F0A"/>
+        <circle cx="70" cy="121" r="2" fill="#3B1F0A"/>
+        <circle cx="124" cy="125" r="2" fill="#3B1F0A"/>
+        <circle cx="130" cy="121" r="2" fill="#3B1F0A"/>
+      </g>
+    </svg>
+
+    <p class="instructions">
+      Answer 10 math questions to win!<br/>
+      Get 4 wrong and LION is spelled — you lose.<br/>
+      Answer fast &amp; get a streak for multiplication! 🦁
+    </p>
+
+    <button class="btn-play" onclick="startGame()">PLAY</button>
+  </div>
+</div>
+
+<!-- ═══════════════ PLAY SCREEN ═══════════════ -->
+<div id="screen-play" class="screen">
+
+  <!-- Header row -->
+  <div style="display:flex; justify-content:space-between; align-items:center; width:100%;">
+    <div class="game-title" style="font-size:2.4rem; letter-spacing:3px;">LION</div>
+    <div class="score-display">&#10003; <span id="score-display">0</span>/10</div>
+  </div>
+
+  <div class="card">
+    <!-- Game SVG lion (colorable) -->
+    <svg id="lion-svg" viewBox="0 0 200 220" xmlns="http://www.w3.org/2000/svg" width="160" height="176">
+      <!-- REGION 1: MANE — colors on wrong #1 (L) -->
+      <ellipse id="region-mane" cx="100" cy="115" rx="72" ry="70"
+        fill="white" stroke="#3B1F0A" stroke-width="2.5"/>
+      <!-- REGION 2: FACE — colors on wrong #2 (I) -->
+      <ellipse id="region-face" cx="100" cy="110" rx="48" ry="45"
+        fill="white" stroke="#3B1F0A" stroke-width="2"/>
+      <!-- REGION 3: EARS — colors on wrong #3 (O) -->
+      <g id="region-ears">
+        <ellipse cx="62" cy="72" rx="14" ry="16"
+          fill="white" stroke="#3B1F0A" stroke-width="2"/>
+        <ellipse cx="138" cy="72" rx="14" ry="16"
+          fill="white" stroke="#3B1F0A" stroke-width="2"/>
+        <ellipse cx="62" cy="73" rx="8" ry="9" fill="white" stroke="#3B1F0A" stroke-width="1"/>
+        <ellipse cx="138" cy="73" rx="8" ry="9" fill="white" stroke="#3B1F0A" stroke-width="1"/>
+      </g>
+      <!-- REGION 4: FEATURES — colors on wrong #4 (N) -->
+      <g id="region-features">
+        <ellipse cx="83" cy="103" rx="9" ry="8" fill="white" stroke="#3B1F0A" stroke-width="2"/>
+        <ellipse cx="117" cy="103" rx="9" ry="8" fill="white" stroke="#3B1F0A" stroke-width="2"/>
+        <circle cx="85" cy="104" r="4" fill="white"/>
+        <circle cx="119" cy="104" r="4" fill="white"/>
+        <ellipse cx="100" cy="122" rx="10" ry="7" fill="white" stroke="#3B1F0A" stroke-width="2"/>
+        <path d="M90 130 Q100 140 110 130" fill="none" stroke="#3B1F0A" stroke-width="2" stroke-linecap="round"/>
+        <line x1="100" y1="129" x2="100" y2="134" stroke="#3B1F0A" stroke-width="1.5"/>
+        <circle cx="76" cy="125" r="2" fill="white"/>
+        <circle cx="70" cy="121" r="2" fill="white"/>
+        <circle cx="124" cy="125" r="2" fill="white"/>
+        <circle cx="130" cy="121" r="2" fill="white"/>
+      </g>
+    </svg>
+
+    <!-- L I O N letters -->
+    <div class="lion-letters">
+      <span class="lion-letter" id="letter-L">L</span>
+      <span class="lion-letter" id="letter-I">I</span>
+      <span class="lion-letter" id="letter-O">O</span>
+      <span class="lion-letter" id="letter-N">N</span>
+    </div>
+
+    <!-- Equation -->
+    <div class="equation" id="equation-display">__ + __ = ?</div>
+
+    <!-- Input -->
+    <div class="input-group">
+      <input
+        type="number"
+        id="answer-input"
+        placeholder="?"
+        autocomplete="off"
+        min="0"
+        max="999"
+      />
+      <button class="btn-submit" onclick="submitAnswer()">GO!</button>
+    </div>
+
+    <!-- Streak hint -->
+    <div id="streak-hint" style="font-size:0.85rem; color:var(--brown); font-weight:600; min-height:1.2em;"></div>
+  </div>
+</div>
+
+<!-- ═══════════════ WINNER OVERLAY ═══════════════ -->
+<div id="overlay-winner" class="overlay overlay-winner">
+  <div class="overlay-text">🎉 WINNER! 🎉</div>
+  <div class="overlay-sub">10 correct — Amazing!</div>
+</div>
+
+<!-- ═══════════════ LION OVERLAY ═══════════════ -->
+<div id="overlay-lion" class="overlay overlay-lion">
+  <div class="overlay-text" style="font-family:'Fredoka One',cursive; color:var(--gold);">LION</div>
+  <div class="overlay-sub">4 wrong answers… try again!</div>
+</div>
+
+<script>
+/* ────────────────────────────────────────────────
+   STATE
+──────────────────────────────────────────────── */
+const state = {
+  score: 0,             // correct answers (0–10)
+  wrongCount: 0,        // wrong answers (0–4)
+  consecutiveCorrect: 0,
+  currentQuestion: null,
+  phase: 'home',        // 'home' | 'playing' | 'winner' | 'lion'
+  locked: false,        // prevent input during animations
+};
+
+/* ────────────────────────────────────────────────
+   LION COLORING
+──────────────────────────────────────────────── */
+const REGION_COLORS = {
+  'region-mane':     '#E07B2A',
+  'region-face':     '#F5A623',
+  'region-ears':     '#F5A623',
+  'region-features': '#3B1F0A',
+};
+const REGION_ORDER = ['region-mane', 'region-face', 'region-ears', 'region-features'];
+
+function updateLionColor(wrongCount) {
+  REGION_ORDER.forEach((id, index) => {
+    const el = document.getElementById(id);
+    if (!el) return;
+    const targets = el.tagName === 'g'
+      ? el.querySelectorAll('ellipse, circle, path, line')
+      : [el];
+    targets.forEach(t => {
+      t.setAttribute('fill', index < wrongCount ? REGION_COLORS[id] : 'white');
+    });
+  });
+}
+
+/* ────────────────────────────────────────────────
+   QUESTION GENERATION
+──────────────────────────────────────────────── */
+function rand(min, max) {
+  return Math.floor(Math.random() * (max - min + 1)) + min;
+}
+
+function generateQuestion(score, consecutiveCorrect) {
+  const difficulty = score;
+  const maxNum = Math.min(10 + difficulty * 9, 100);
+
+  // 30% chance of multiplication after 5-streak
+  if (consecutiveCorrect >= 5 && Math.random() < 0.3) {
+    const num1 = rand(1, 4);
+    const num2 = rand(1, 4);
+    return { num1, operator: '×', num2, answer: num1 * num2 };
+  }
+
+  const operator = Math.random() < 0.5 ? '+' : '-';
+  if (operator === '+') {
+    const num1 = rand(0, maxNum);
+    const num2 = rand(0, maxNum - num1);
+    return { num1, operator, num2, answer: num1 + num2 };
+  } else {
+    const num1 = rand(0, maxNum);
+    const num2 = rand(0, num1);        // ensure non-negative result
+    return { num1, operator, num2, answer: num1 - num2 };
+  }
+}
+
+/* ────────────────────────────────────────────────
+   SCREEN MANAGEMENT
+──────────────────────────────────────────────── */
+function showScreen(name) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  const el = document.getElementById('screen-' + name);
+  if (el) el.classList.add('active');
+}
+
+/* ────────────────────────────────────────────────
+   GAME FLOW
+──────────────────────────────────────────────── */
+function startGame() {
+  state.score = 0;
+  state.wrongCount = 0;
+  state.consecutiveCorrect = 0;
+  state.phase = 'playing';
+  state.locked = false;
+
+  updateLionColor(0);
+  updateLetters(0);
+  updateScore(0);
+  loadNextQuestion();
+  showScreen('play');
+
+  setTimeout(() => {
+    document.getElementById('answer-input').focus();
+  }, 100);
+}
+
+function loadNextQuestion() {
+  state.currentQuestion = generateQuestion(state.score, state.consecutiveCorrect);
+  const { num1, operator, num2 } = state.currentQuestion;
+  document.getElementById('equation-display').textContent = `${num1} ${operator} ${num2} = ?`;
+  const input = document.getElementById('answer-input');
+  input.value = '';
+  input.className = '';        // clear flash classes
+  updateStreakHint();
+}
+
+function updateScore(score) {
+  document.getElementById('score-display').textContent = score;
+}
+
+function updateLetters(wrongCount) {
+  const letters = ['L', 'I', 'O', 'N'];
+  letters.forEach((l, i) => {
+    const el = document.getElementById('letter-' + l);
+    if (i < wrongCount) {
+      el.classList.add('earned');
+    } else {
+      el.classList.remove('earned');
+    }
+  });
+}
+
+function updateStreakHint() {
+  const hint = document.getElementById('streak-hint');
+  const streak = state.consecutiveCorrect;
+  if (streak >= 5) {
+    hint.textContent = `🔥 ${streak} streak — multiplication unlocked!`;
+    hint.style.color = 'var(--orange)';
+  } else if (streak > 0) {
+    hint.textContent = `⭐ ${streak} correct in a row — keep going!`;
+    hint.style.color = 'var(--green)';
+  } else {
+    hint.textContent = '';
+  }
+}
+
+/* ────────────────────────────────────────────────
+   ANSWER SUBMISSION
+──────────────────────────────────────────────── */
+function submitAnswer() {
+  if (state.locked || state.phase !== 'playing') return;
+
+  const input = document.getElementById('answer-input');
+  const raw = input.value.trim();
+  if (raw === '') return;
+
+  const guess = parseInt(raw, 10);
+  if (isNaN(guess)) { input.value = ''; return; }
+
+  const correct = state.currentQuestion.answer;
+
+  if (guess === correct) {
+    handleCorrect(input);
+  } else {
+    handleWrong(input);
+  }
+}
+
+function handleCorrect(input) {
+  state.score++;
+  state.consecutiveCorrect++;
+  updateScore(state.score);
+
+  // Flash green
+  input.classList.remove('flash-wrong');
+  void input.offsetWidth; // force reflow
+  input.classList.add('flash-correct');
+
+  if (state.score >= 10) {
+    state.phase = 'winner';
+    state.locked = true;
+    setTimeout(showWinner, 400);
+    return;
+  }
+
+  setTimeout(() => {
+    input.classList.remove('flash-correct');
+    loadNextQuestion();
+    input.focus();
+  }, 500);
+}
+
+function handleWrong(input) {
+  state.wrongCount++;
+  state.consecutiveCorrect = 0;
+  updateLetters(state.wrongCount);
+  updateLionColor(state.wrongCount);
+
+  // Shake + red flash on input
+  input.classList.remove('flash-correct');
+  void input.offsetWidth;
+  input.classList.add('flash-wrong');
+
+  // Shake lion SVG
+  const lion = document.getElementById('lion-svg');
+  lion.classList.remove('shake');
+  void lion.offsetWidth;
+  lion.classList.add('shake');
+
+  if (state.wrongCount >= 4) {
+    state.phase = 'lion';
+    state.locked = true;
+    setTimeout(showLion, 600);
+    return;
+  }
+
+  setTimeout(() => {
+    input.classList.remove('flash-wrong');
+    lion.classList.remove('shake');
+    loadNextQuestion();
+    input.focus();
+  }, 600);
+}
+
+/* ────────────────────────────────────────────────
+   WIN / LOSS OVERLAYS
+──────────────────────────────────────────────── */
+function showWinner() {
+  document.getElementById('overlay-winner').classList.add('active');
+  startConfetti();
+  let flashes = 0;
+  const txt = document.querySelector('#overlay-winner .overlay-text');
+  const iv = setInterval(() => {
+    txt.style.visibility = txt.style.visibility === 'hidden' ? 'visible' : 'hidden';
+    flashes++;
+    if (flashes >= 6) {
+      clearInterval(iv);
+      txt.style.visibility = 'visible';
+    }
+  }, 500);
+  setTimeout(() => {
+    stopConfetti();
+    document.getElementById('overlay-winner').classList.remove('active');
+    startGame();
+  }, 4500);
+}
+
+function showLion() {
+  document.getElementById('overlay-lion').classList.add('active');
+  const txt = document.querySelector('#overlay-lion .overlay-text');
+  let flashes = 0;
+  const iv = setInterval(() => {
+    txt.style.visibility = txt.style.visibility === 'hidden' ? 'visible' : 'hidden';
+    flashes++;
+    if (flashes >= 6) {
+      clearInterval(iv);
+      txt.style.visibility = 'visible';
+    }
+  }, 500);
+  setTimeout(() => {
+    document.getElementById('overlay-lion').classList.remove('active');
+    startGame();
+  }, 3500);
+}
+
+/* ────────────────────────────────────────────────
+   CONFETTI
+──────────────────────────────────────────────── */
+const CONFETTI_COLORS = ['#F5A623','#E07B2A','#4A7C2F','#87CEEB','#fff','#ff6b6b','#ffe66d'];
+let confettiPieces = [];
+let confettiAnim = null;
+
+function startConfetti() {
+  const canvas = document.getElementById('confetti-canvas');
+  canvas.width  = window.innerWidth;
+  canvas.height = window.innerHeight;
+  confettiPieces = Array.from({ length: 120 }, () => ({
+    x: Math.random() * canvas.width,
+    y: Math.random() * -canvas.height * 0.5,
+    r: rand(5, 12),
+    color: CONFETTI_COLORS[rand(0, CONFETTI_COLORS.length - 1)],
+    speed: 2 + Math.random() * 3,
+    angle: Math.random() * 2 * Math.PI,
+    spin: (Math.random() - 0.5) * 0.2,
+    drift: (Math.random() - 0.5) * 1.5,
+  }));
+  const ctx = canvas.getContext('2d');
+  function draw() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    confettiPieces.forEach(p => {
+      ctx.save();
+      ctx.translate(p.x, p.y);
+      ctx.rotate(p.angle);
+      ctx.fillStyle = p.color;
+      ctx.fillRect(-p.r / 2, -p.r / 2, p.r, p.r * 0.55);
+      ctx.restore();
+      p.y += p.speed;
+      p.x += p.drift;
+      p.angle += p.spin;
+      if (p.y > canvas.height + 20) {
+        p.y = -20;
+        p.x = Math.random() * canvas.width;
+      }
+    });
+    confettiAnim = requestAnimationFrame(draw);
+  }
+  draw();
+}
+
+function stopConfetti() {
+  if (confettiAnim) { cancelAnimationFrame(confettiAnim); confettiAnim = null; }
+  const canvas = document.getElementById('confetti-canvas');
+  canvas.getContext('2d').clearRect(0, 0, canvas.width, canvas.height);
+}
+
+/* ────────────────────────────────────────────────
+   KEYBOARD — Enter key submits
+──────────────────────────────────────────────── */
+document.getElementById('answer-input').addEventListener('keydown', e => {
+  if (e.key === 'Enter') submitAnswer();
+});
+</script>
+</body>
+</html>
