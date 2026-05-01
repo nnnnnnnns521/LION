@@ -9,360 +9,437 @@
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
     :root {
-      --gold:    #F5A623;
-      --orange:  #E07B2A;
-      --green:   #4A7C2F;
-      --sky:     #87CEEB;
-      --brown:   #3B1F0A;
-      --cream:   #FFF8E7;
-      --red:     #C0392B;
+      --gold:   #F5A623;
+      --orange: #E07B2A;
+      --green:  #4A7C2F;
+      --sky:    #87CEEB;
+      --brown:  #3B1F0A;
     }
 
     body {
       font-family: 'Baloo 2', cursive;
-      background: linear-gradient(180deg, var(--sky) 0%, #B8E0F7 30%, #F5D87A 60%, #E8A84C 100%);
+      background: linear-gradient(180deg, #4AAEDE 0%, #87CEEB 28%, #C8E8F8 48%, #F5D87A 72%, #E8A84C 100%);
       min-height: 100vh;
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      overflow: hidden;
+      overflow-x: hidden;
       position: relative;
     }
 
-    /* Savanna ground accent */
-    body::after {
-      content: '';
+    /* ── SUN ── */
+    .sun {
       position: fixed;
-      bottom: 0; left: 0; right: 0;
-      height: 80px;
-      background: linear-gradient(180deg, transparent, #8B5E1A 100%);
-      pointer-events: none;
-      z-index: 0;
+      top: 28px; right: 70px;
+      width: 68px; height: 68px;
+      background: radial-gradient(circle, #FFEE88 35%, #F5A623 100%);
+      border-radius: 50%;
+      box-shadow: 0 0 50px 18px rgba(255,220,60,0.35);
+      z-index: 0; pointer-events: none;
     }
 
-    /* Acacia silhouette */
-    body::before {
-      content: '';
-      position: fixed;
-      bottom: 70px; right: 30px;
-      width: 80px; height: 100px;
+    /* ── ACACIA TREES ── */
+    .tree {
+      position: fixed; bottom: 56px;
       background: var(--brown);
-      clip-path: polygon(50% 100%, 44% 60%, 20% 55%, 35% 45%, 10% 30%, 38% 38%, 30% 15%, 50% 35%, 65% 5%, 62% 32%, 85% 22%, 70% 42%, 90% 38%, 62% 52%, 56% 60%);
-      pointer-events: none;
-      z-index: 0;
-      opacity: 0.6;
+      clip-path: polygon(50% 100%,44% 62%,20% 57%,35% 47%,10% 32%,38% 40%,30% 17%,50% 37%,65% 7%,62% 34%,85% 24%,70% 44%,90% 40%,62% 54%,56% 62%);
+      z-index: 2; pointer-events: none;
     }
+    .tree-r { right: 18px; width: 72px; height: 96px; opacity: 0.72; }
+    .tree-l { left: 14px;  width: 52px; height: 70px; opacity: 0.50; }
+
+    /* ── GROUND ── */
+    .ground {
+      position: fixed; bottom: 0; left: 0; right: 0;
+      height: 58px;
+      background: linear-gradient(180deg, #B8813A 0%, #7A4E18 100%);
+      z-index: 1; pointer-events: none;
+    }
+
+    /* ── GRASS ── */
+    .grass-wrap {
+      position: fixed; bottom: 50px; left: 0; right: 0;
+      height: 75px; z-index: 3; pointer-events: none; overflow: hidden;
+    }
+    .grass-svg { width: 100%; height: 100%; }
+    .blade { transform-box: fill-box; transform-origin: bottom center; }
+    .blade:nth-child(3n+1) { animation: sw1 2.2s ease-in-out infinite alternate; }
+    .blade:nth-child(3n+2) { animation: sw2 1.9s ease-in-out infinite alternate; }
+    .blade:nth-child(3n)   { animation: sw1 2.6s ease-in-out infinite alternate; }
+    @keyframes sw1 { from { transform: rotate(-5deg); } to { transform: rotate(6deg); } }
+    @keyframes sw2 { from { transform: rotate(5deg);  } to { transform: rotate(-7deg); } }
 
     /* ── SCREENS ── */
     .screen {
-      display: none;
-      flex-direction: column;
-      align-items: center;
-      gap: 18px;
-      position: relative;
-      z-index: 1;
-      width: 100%;
-      max-width: 480px;
-      padding: 20px 16px;
+      display: none; flex-direction: column; align-items: center;
+      gap: 14px; position: relative; z-index: 10;
+      width: 100%; max-width: 500px; padding: 18px 16px 110px;
     }
     .screen.active { display: flex; }
 
     /* ── CARD ── */
     .card {
-      background: rgba(255, 248, 231, 0.92);
-      border-radius: 24px;
-      padding: 28px 32px;
+      background: rgba(255,248,231,0.93);
+      border-radius: 24px; padding: 22px 28px;
       box-shadow: 0 8px 32px rgba(59,31,10,0.18);
-      width: 100%;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 16px;
+      width: 100%; display: flex; flex-direction: column;
+      align-items: center; gap: 13px;
     }
 
     /* ── TITLE ── */
     .game-title {
       font-family: 'Fredoka One', cursive;
-      font-size: 3.6rem;
-      color: var(--orange);
+      font-size: 3.5rem; color: var(--orange);
       text-shadow: 3px 3px 0 var(--brown), -1px -1px 0 var(--gold);
-      letter-spacing: 6px;
-      line-height: 1;
+      letter-spacing: 6px; line-height: 1;
     }
 
-    /* ── SCORE ── */
+    /* ── LEVEL SELECT ── */
+    .level-cards { display: flex; flex-direction: column; gap: 11px; width: 100%; }
+    .level-card {
+      display: flex; align-items: center; gap: 12px;
+      padding: 13px 16px; border-radius: 18px;
+      border: 3px solid var(--orange); background: white;
+      cursor: pointer;
+      box-shadow: 0 4px 0 rgba(59,31,10,0.14);
+      transition: transform 0.1s, box-shadow 0.1s;
+    }
+    .level-card:hover:not(.locked) { transform: translateY(-2px); box-shadow: 0 6px 0 rgba(59,31,10,0.14); }
+    .level-card:active:not(.locked){ transform: translateY(1px);  box-shadow: 0 2px 0 rgba(59,31,10,0.14); }
+    .level-card.locked { opacity: 0.45; cursor: not-allowed; border-color: #bbb; }
+    .lv-icon { font-size: 2rem; width: 40px; text-align: center; }
+    .lv-info { flex: 1; text-align: left; }
+    .lv-name { font-family: 'Fredoka One', cursive; font-size: 1.2rem; color: var(--brown); }
+    .lv-desc { font-size: 0.78rem; color: #777; font-weight: 600; margin-top: 1px; }
+    .lv-stars { font-size: 0.95rem; letter-spacing: 1px; }
+    .lv-btn {
+      font-family: 'Fredoka One', cursive; font-size: 1rem;
+      padding: 8px 16px; background: var(--orange); color: white;
+      border: none; border-radius: 12px; cursor: pointer;
+      box-shadow: 0 3px 0 rgba(59,31,10,0.18);
+    }
+    .level-card.locked .lv-btn { background: #bbb; cursor: not-allowed; }
+
+    /* ── PLAY HEADER ── */
+    .play-header {
+      display: flex; justify-content: space-between;
+      align-items: center; width: 100%;
+    }
     .score-display {
-      font-size: 1.3rem;
-      font-weight: 800;
-      color: var(--brown);
-      background: var(--gold);
-      padding: 4px 18px;
-      border-radius: 999px;
+      font-size: 1.15rem; font-weight: 800; color: var(--brown);
+      background: var(--gold); padding: 4px 15px;
+      border-radius: 999px; border: 2px solid var(--orange);
+    }
+    .level-badge {
+      font-family: 'Fredoka One', cursive; font-size: 0.9rem;
+      color: white; background: var(--brown);
+      padding: 3px 12px; border-radius: 999px;
+    }
+
+    /* ── TIMER ── */
+    .timer-wrap { width: 100%; display: none; }
+    .timer-wrap.on { display: block; }
+    .timer-track {
+      width: 100%; height: 13px; background: #e8e0d0;
+      border-radius: 999px; overflow: hidden;
       border: 2px solid var(--orange);
     }
+    .timer-fill {
+      height: 100%; border-radius: 999px;
+      background: var(--green);
+      transition: width 1s linear, background 0.4s;
+    }
+    .timer-label {
+      font-family: 'Fredoka One', cursive; font-size: 0.95rem;
+      color: var(--brown); text-align: right; margin-top: 2px;
+    }
 
-    /* ── SVG LION ── */
-    #lion-svg {
-      filter: drop-shadow(2px 4px 6px rgba(59,31,10,0.3));
-      transition: transform 0.2s;
-    }
-    #lion-svg.shake {
-      animation: shakeEl 0.5s ease;
-    }
+    /* ── LION SVG ── */
+    #lion-svg { filter: drop-shadow(1px 4px 5px rgba(59,31,10,0.22)); overflow: visible; }
+    #lion-svg.shake { animation: shakeEl 0.45s ease; }
 
     /* ── LETTERS ── */
-    .lion-letters {
-      display: flex;
-      gap: 10px;
-    }
+    .lion-letters { display: flex; gap: 11px; }
     .lion-letter {
-      font-family: 'Fredoka One', cursive;
-      font-size: 2rem;
-      color: #ddd;
-      transition: color 0.3s, transform 0.3s;
+      font-family: 'Fredoka One', cursive; font-size: 2rem; color: #ccc;
+      transition: color 0.28s, transform 0.28s;
     }
     .lion-letter.earned {
-      color: var(--orange);
-      transform: scale(1.15);
+      color: var(--orange); transform: scale(1.14);
       text-shadow: 1px 1px 0 var(--brown);
     }
 
     /* ── EQUATION ── */
     .equation {
-      font-family: 'Fredoka One', cursive;
-      font-size: 2.6rem;
-      color: var(--brown);
-      text-align: center;
-      letter-spacing: 2px;
+      font-family: 'Fredoka One', cursive; font-size: 2.5rem;
+      color: var(--brown); text-align: center; letter-spacing: 2px;
     }
 
-    /* ── INPUT GROUP ── */
-    .input-group {
-      display: flex;
-      gap: 10px;
-      width: 100%;
-      justify-content: center;
-    }
+    /* ── INPUT ── */
+    .input-group { display: flex; gap: 10px; justify-content: center; }
     input[type="number"] {
-      font-family: 'Baloo 2', cursive;
-      font-size: 1.5rem;
-      font-weight: 800;
-      width: 110px;
-      padding: 10px 14px;
-      border: 3px solid var(--orange);
-      border-radius: 14px;
-      background: white;
-      color: var(--brown);
-      text-align: center;
-      outline: none;
-      transition: border-color 0.2s, background 0.2s;
-      /* hide number spinners */
-      -moz-appearance: textfield;
+      font-family: 'Baloo 2', cursive; font-size: 1.5rem; font-weight: 800;
+      width: 108px; padding: 10px 12px;
+      border: 3px solid var(--orange); border-radius: 14px;
+      background: white; color: var(--brown); text-align: center;
+      outline: none; -moz-appearance: textfield;
     }
-    input[type="number"]::-webkit-outer-spin-button,
-    input[type="number"]::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
-    input[type="number"]:focus { border-color: var(--green); }
-    input[type="number"].flash-correct { animation: flashGreen 0.5s ease; }
-    input[type="number"].flash-wrong   { animation: shakeInput 0.5s ease; }
+    input::-webkit-outer-spin-button,
+    input::-webkit-inner-spin-button { -webkit-appearance: none; }
+    input:focus { border-color: var(--green); }
+    input.flash-correct { animation: flashGreen 0.5s ease; }
+    input.flash-wrong   { animation: shakeInput 0.5s ease; }
 
     /* ── BUTTONS ── */
     button {
-      font-family: 'Fredoka One', cursive;
-      font-size: 1.25rem;
-      padding: 11px 28px;
-      border: none;
-      border-radius: 14px;
-      cursor: pointer;
+      font-family: 'Fredoka One', cursive; font-size: 1.2rem;
+      padding: 11px 24px; border: none; border-radius: 14px;
+      cursor: pointer; box-shadow: 0 4px 0 rgba(59,31,10,0.22);
       transition: transform 0.1s, box-shadow 0.1s;
-      box-shadow: 0 4px 0 rgba(59,31,10,0.25);
     }
-    button:active { transform: translateY(2px); box-shadow: 0 2px 0 rgba(59,31,10,0.2); }
+    button:active { transform: translateY(2px); box-shadow: 0 2px 0 rgba(59,31,10,0.18); }
+    .btn-submit { background: var(--green); color: white; }
+    .streak-hint { font-size: 0.82rem; color: var(--brown); font-weight: 600; min-height: 1.1em; }
 
-    .btn-submit {
-      background: var(--green);
-      color: white;
-      letter-spacing: 1px;
-    }
-    .btn-play {
-      background: var(--orange);
-      color: white;
-      font-size: 1.6rem;
-      padding: 14px 48px;
-      letter-spacing: 2px;
-    }
-    .btn-play:hover { background: #cc6a1e; }
-
-    /* ── INSTRUCTIONS ── */
-    .instructions {
-      color: var(--brown);
-      font-size: 1rem;
-      font-weight: 600;
-      line-height: 1.6;
-      text-align: center;
-      max-width: 320px;
-    }
-
-    /* ── FLASH OVERLAYS ── */
+    /* ── OVERLAYS ── */
     .overlay {
-      display: none;
-      position: fixed;
-      inset: 0;
-      z-index: 50;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      gap: 12px;
+      display: none; position: fixed; inset: 0; z-index: 60;
+      flex-direction: column; align-items: center; justify-content: center; gap: 10px;
     }
     .overlay.active { display: flex; }
-
-    .overlay-winner {
-      background: rgba(74, 124, 47, 0.92);
-    }
-    .overlay-lion {
-      background: rgba(59, 31, 10, 0.92);
-    }
+    .overlay-winner { background: rgba(60,110,35,0.93); }
+    .overlay-lion   { background: rgba(40,15,3,0.93); }
+    .overlay-unlock { background: rgba(224,123,42,0.96); }
     .overlay-text {
-      font-family: 'Fredoka One', cursive;
-      font-size: 5rem;
-      color: white;
-      text-shadow: 3px 3px 0 rgba(0,0,0,0.3);
-      animation: pulseFlash 0.7s ease infinite alternate;
+      font-family: 'Fredoka One', cursive; font-size: 4.5rem; color: white;
+      text-shadow: 3px 3px 0 rgba(0,0,0,0.28);
+      animation: pulse 0.7s ease infinite alternate; text-align: center;
     }
-    .overlay-sub {
-      font-size: 1.5rem;
-      font-weight: 800;
-      color: rgba(255,255,255,0.85);
-    }
+    .overlay-sub { font-size: 1.35rem; font-weight: 800; color: rgba(255,255,255,0.9); text-align: center; }
 
     /* ── CONFETTI ── */
-    #confetti-canvas {
-      position: fixed;
-      inset: 0;
-      pointer-events: none;
-      z-index: 49;
-    }
+    #confetti-canvas { position: fixed; inset: 0; pointer-events: none; z-index: 50; }
 
-    /* ── ANIMATIONS ── */
+    /* ── KEYFRAMES ── */
     @keyframes flashGreen {
-      0%   { background: white; }
-      40%  { background: #b8f5b0; border-color: var(--green); }
-      100% { background: white; }
+      0%,100% { background: white; }
+      40% { background: #b8f5b0; border-color: var(--green); }
     }
     @keyframes shakeInput {
-      0%   { transform: translateX(0);  background: white; }
-      20%  { transform: translateX(-8px); background: #ffd6d6; }
-      40%  { transform: translateX(8px); }
-      60%  { transform: translateX(-6px); }
-      80%  { transform: translateX(4px); }
-      100% { transform: translateX(0);  background: white; }
+      0%,100% { transform: translateX(0); background: white; }
+      20% { transform: translateX(-8px); background: #ffd6d6; }
+      40% { transform: translateX(8px); }
+      60% { transform: translateX(-6px); }
+      80% { transform: translateX(4px); }
     }
     @keyframes shakeEl {
-      0%   { transform: translateX(0); }
-      20%  { transform: translateX(-10px); }
-      40%  { transform: translateX(10px); }
-      60%  { transform: translateX(-6px); }
-      80%  { transform: translateX(4px); }
-      100% { transform: translateX(0); }
+      0%,100% { transform: translateX(0); }
+      20% { transform: translateX(-10px); }
+      40% { transform: translateX(10px); }
+      60% { transform: translateX(-7px); }
+      80% { transform: translateX(4px); }
     }
-    @keyframes pulseFlash {
+    @keyframes pulse {
       from { transform: scale(1);    opacity: 1; }
-      to   { transform: scale(1.07); opacity: 0.85; }
+      to   { transform: scale(1.07); opacity: 0.84; }
     }
   </style>
 </head>
 <body>
 
-<!-- CONFETTI CANVAS -->
+<!-- ── SCENERY ── -->
+<div class="sun"></div>
+<div class="tree tree-r"></div>
+<div class="tree tree-l"></div>
+<div class="ground"></div>
+
+<!-- ── GRASS ── -->
+<div class="grass-wrap">
+  <svg class="grass-svg" viewBox="0 0 800 75" preserveAspectRatio="xMidYMax slice" xmlns="http://www.w3.org/2000/svg">
+    <!-- background grass (lighter, shorter) -->
+    <g fill="#5A9E3A" opacity="0.65">
+      <path class="blade" d="M16,75 Q14,58 18,42 Q22,58 24,75 Z"/>
+      <path class="blade" d="M48,75 Q46,52 50,28 Q54,52 56,75 Z"/>
+      <path class="blade" d="M80,75 Q78,60 82,48 Q86,60 88,75 Z"/>
+      <path class="blade" d="M112,75 Q110,55 114,35 Q118,55 120,75 Z"/>
+      <path class="blade" d="M144,75 Q142,58 146,44 Q150,58 152,75 Z"/>
+      <path class="blade" d="M176,75 Q174,50 178,22 Q182,50 184,75 Z"/>
+      <path class="blade" d="M208,75 Q206,57 210,40 Q214,57 216,75 Z"/>
+      <path class="blade" d="M240,75 Q238,54 242,30 Q246,54 248,75 Z"/>
+      <path class="blade" d="M272,75 Q270,60 274,46 Q278,60 280,75 Z"/>
+      <path class="blade" d="M304,75 Q302,52 306,26 Q310,52 312,75 Z"/>
+      <path class="blade" d="M336,75 Q334,56 338,38 Q342,56 344,75 Z"/>
+      <path class="blade" d="M368,75 Q366,50 370,20 Q374,50 376,75 Z"/>
+      <path class="blade" d="M400,75 Q398,58 402,44 Q406,58 408,75 Z"/>
+      <path class="blade" d="M432,75 Q430,53 434,28 Q438,53 440,75 Z"/>
+      <path class="blade" d="M464,75 Q462,60 466,46 Q470,60 472,75 Z"/>
+      <path class="blade" d="M496,75 Q494,52 498,22 Q502,52 504,75 Z"/>
+      <path class="blade" d="M528,75 Q526,57 530,40 Q534,57 536,75 Z"/>
+      <path class="blade" d="M560,75 Q558,54 562,32 Q566,54 568,75 Z"/>
+      <path class="blade" d="M592,75 Q590,59 594,44 Q598,59 600,75 Z"/>
+      <path class="blade" d="M624,75 Q622,51 626,24 Q630,51 632,75 Z"/>
+      <path class="blade" d="M656,75 Q654,56 658,38 Q662,56 664,75 Z"/>
+      <path class="blade" d="M688,75 Q686,60 690,46 Q694,60 696,75 Z"/>
+      <path class="blade" d="M720,75 Q718,52 722,26 Q726,52 728,75 Z"/>
+      <path class="blade" d="M752,75 Q750,57 754,42 Q758,57 760,75 Z"/>
+      <path class="blade" d="M784,75 Q782,54 786,30 Q790,54 792,75 Z"/>
+    </g>
+    <!-- foreground grass (darker, taller) -->
+    <g fill="#3D7A26">
+      <path class="blade" d="M2,75 Q0,55 4,32 Q8,55 10,75 Z"/>
+      <path class="blade" d="M32,75 Q30,48 34,18 Q38,48 40,75 Z"/>
+      <path class="blade" d="M62,75 Q60,58 66,48 Q70,58 72,75 Z"/>
+      <path class="blade" d="M96,75 Q94,50 98,22 Q102,50 104,75 Z"/>
+      <path class="blade" d="M128,75 Q126,53 130,28 Q134,53 136,75 Z"/>
+      <path class="blade" d="M160,75 Q158,60 162,46 Q166,60 168,75 Z"/>
+      <path class="blade" d="M194,75 Q192,48 196,16 Q200,48 202,75 Z"/>
+      <path class="blade" d="M226,75 Q224,55 228,36 Q232,55 234,75 Z"/>
+      <path class="blade" d="M258,75 Q256,50 260,20 Q264,50 266,75 Z"/>
+      <path class="blade" d="M290,75 Q288,57 292,42 Q296,57 298,75 Z"/>
+      <path class="blade" d="M322,75 Q320,52 324,26 Q328,52 330,75 Z"/>
+      <path class="blade" d="M356,75 Q354,48 358,14 Q362,48 364,75 Z"/>
+      <path class="blade" d="M388,75 Q386,56 390,38 Q394,56 396,75 Z"/>
+      <path class="blade" d="M420,75 Q418,50 422,22 Q426,50 428,75 Z"/>
+      <path class="blade" d="M454,75 Q452,57 456,40 Q460,57 462,75 Z"/>
+      <path class="blade" d="M486,75 Q484,48 488,16 Q492,48 494,75 Z"/>
+      <path class="blade" d="M518,75 Q516,54 520,30 Q524,54 526,75 Z"/>
+      <path class="blade" d="M550,75 Q548,60 552,46 Q556,60 558,75 Z"/>
+      <path class="blade" d="M582,75 Q580,50 584,22 Q588,50 590,75 Z"/>
+      <path class="blade" d="M614,75 Q612,53 616,28 Q620,53 622,75 Z"/>
+      <path class="blade" d="M646,75 Q644,48 648,14 Q652,48 654,75 Z"/>
+      <path class="blade" d="M678,75 Q676,56 680,38 Q684,56 686,75 Z"/>
+      <path class="blade" d="M710,75 Q708,50 712,20 Q716,50 718,75 Z"/>
+      <path class="blade" d="M742,75 Q740,55 744,34 Q748,55 750,75 Z"/>
+      <path class="blade" d="M774,75 Q772,48 776,16 Q780,48 782,75 Z"/>
+    </g>
+  </svg>
+</div>
+
 <canvas id="confetti-canvas"></canvas>
 
-<!-- ═══════════════ HOME SCREEN ═══════════════ -->
+<!-- ═══════════════════ HOME / LEVEL SELECT ═══════════════════ -->
 <div id="screen-home" class="screen active">
   <div class="game-title">LION</div>
 
+  <!-- Decorative fully-colored lion -->
+  <svg viewBox="0 0 200 230" xmlns="http://www.w3.org/2000/svg" width="150" height="173"
+       style="filter:drop-shadow(2px 4px 6px rgba(59,31,10,0.28));overflow:visible;">
+    <!-- mane outer -->
+    <ellipse cx="100" cy="128" rx="76" ry="73" fill="#C8621A" stroke="#3B1F0A" stroke-width="2"/>
+    <!-- mane inner -->
+    <ellipse cx="100" cy="124" rx="64" ry="61" fill="#E07B2A" stroke="#3B1F0A" stroke-width="1.5"/>
+    <!-- face -->
+    <ellipse cx="100" cy="114" rx="51" ry="49" fill="#F5A623" stroke="#3B1F0A" stroke-width="2"/>
+    <!-- cheeks -->
+    <ellipse cx="65" cy="127" rx="18" ry="12" fill="#F5A623" stroke="#3B1F0A" stroke-width="1.5"/>
+    <ellipse cx="135" cy="127" rx="18" ry="12" fill="#F5A623" stroke="#3B1F0A" stroke-width="1.5"/>
+    <!-- ears -->
+    <ellipse cx="55" cy="60" rx="17" ry="20" fill="#F5A623" stroke="#3B1F0A" stroke-width="2"/>
+    <ellipse cx="145" cy="60" rx="17" ry="20" fill="#F5A623" stroke="#3B1F0A" stroke-width="2"/>
+    <ellipse cx="55" cy="61" rx="10" ry="12" fill="#FFDBA0" stroke="#3B1F0A" stroke-width="1"/>
+    <ellipse cx="145" cy="61" rx="10" ry="12" fill="#FFDBA0" stroke="#3B1F0A" stroke-width="1"/>
+    <!-- ear tufts -->
+    <polygon points="48,42 55,30 62,42" fill="#C8621A" stroke="#3B1F0A" stroke-width="1.2"/>
+    <polygon points="138,42 145,30 152,42" fill="#C8621A" stroke="#3B1F0A" stroke-width="1.2"/>
+    <!-- eyebrows -->
+    <path d="M72,99 Q83,93 94,97" fill="none" stroke="#3B1F0A" stroke-width="3" stroke-linecap="round"/>
+    <path d="M106,97 Q117,93 128,99" fill="none" stroke="#3B1F0A" stroke-width="3" stroke-linecap="round"/>
+    <!-- eyes -->
+    <ellipse cx="83" cy="108" rx="11" ry="10" fill="white" stroke="#3B1F0A" stroke-width="2"/>
+    <ellipse cx="117" cy="108" rx="11" ry="10" fill="white" stroke="#3B1F0A" stroke-width="2"/>
+    <circle cx="85" cy="109" r="6" fill="#3B1F0A"/>
+    <circle cx="119" cy="109" r="6" fill="#3B1F0A"/>
+    <circle cx="87" cy="107" r="2.2" fill="white"/>
+    <circle cx="121" cy="107" r="2.2" fill="white"/>
+    <!-- nose -->
+    <ellipse cx="100" cy="126" rx="12" ry="8" fill="#3B1F0A"/>
+    <!-- mouth -->
+    <line x1="100" y1="134" x2="100" y2="140" stroke="#3B1F0A" stroke-width="2"/>
+    <path d="M87,140 Q100,153 113,140" fill="none" stroke="#3B1F0A" stroke-width="2.5" stroke-linecap="round"/>
+    <!-- whisker dots -->
+    <circle cx="73" cy="128" r="2.5" fill="#3B1F0A"/>
+    <circle cx="65" cy="124" r="2.5" fill="#3B1F0A"/>
+    <circle cx="60" cy="131" r="2.5" fill="#3B1F0A"/>
+    <circle cx="127" cy="128" r="2.5" fill="#3B1F0A"/>
+    <circle cx="135" cy="124" r="2.5" fill="#3B1F0A"/>
+    <circle cx="140" cy="131" r="2.5" fill="#3B1F0A"/>
+  </svg>
+
   <div class="card">
-    <!-- SVG Lion (home — purely decorative, fully colored) -->
-    <svg id="lion-svg-home" viewBox="0 0 200 220" xmlns="http://www.w3.org/2000/svg" width="180" height="198">
-      <ellipse cx="100" cy="115" rx="72" ry="70" fill="#E07B2A" stroke="#3B1F0A" stroke-width="2.5"/>
-      <ellipse cx="100" cy="110" rx="48" ry="45" fill="#F5A623" stroke="#3B1F0A" stroke-width="2"/>
-      <g>
-        <ellipse cx="62" cy="72" rx="14" ry="16" fill="#F5A623" stroke="#3B1F0A" stroke-width="2"/>
-        <ellipse cx="138" cy="72" rx="14" ry="16" fill="#F5A623" stroke="#3B1F0A" stroke-width="2"/>
-        <ellipse cx="62" cy="73" rx="8" ry="9" fill="#FFDBA0" stroke="#3B1F0A" stroke-width="1"/>
-        <ellipse cx="138" cy="73" rx="8" ry="9" fill="#FFDBA0" stroke="#3B1F0A" stroke-width="1"/>
-      </g>
-      <g>
-        <ellipse cx="83" cy="103" rx="9" ry="8" fill="white" stroke="#3B1F0A" stroke-width="2"/>
-        <ellipse cx="117" cy="103" rx="9" ry="8" fill="white" stroke="#3B1F0A" stroke-width="2"/>
-        <circle cx="85" cy="104" r="4" fill="#3B1F0A"/>
-        <circle cx="119" cy="104" r="4" fill="#3B1F0A"/>
-        <circle cx="86" cy="103" r="1.5" fill="white"/>
-        <circle cx="120" cy="103" r="1.5" fill="white"/>
-        <ellipse cx="100" cy="122" rx="10" ry="7" fill="#3B1F0A" stroke="#3B1F0A" stroke-width="2"/>
-        <path d="M90 130 Q100 140 110 130" fill="none" stroke="#3B1F0A" stroke-width="2" stroke-linecap="round"/>
-        <line x1="100" y1="129" x2="100" y2="134" stroke="#3B1F0A" stroke-width="1.5"/>
-        <circle cx="76" cy="125" r="2" fill="#3B1F0A"/>
-        <circle cx="70" cy="121" r="2" fill="#3B1F0A"/>
-        <circle cx="124" cy="125" r="2" fill="#3B1F0A"/>
-        <circle cx="130" cy="121" r="2" fill="#3B1F0A"/>
-      </g>
-    </svg>
-
-    <p class="instructions">
-      Answer 10 math questions to win!<br/>
-      Get 4 wrong and LION is spelled — you lose.<br/>
-      Answer fast &amp; get a streak for multiplication! 🦁
-    </p>
-
-    <button class="btn-play" onclick="startGame()">PLAY</button>
+    <div style="font-family:'Fredoka One',cursive;font-size:1.1rem;color:var(--brown);letter-spacing:1px;">Choose your level</div>
+    <div class="level-cards" id="level-cards-list">
+      <!-- generated by JS -->
+    </div>
   </div>
 </div>
 
-<!-- ═══════════════ PLAY SCREEN ═══════════════ -->
+<!-- ═══════════════════ PLAY SCREEN ═══════════════════ -->
 <div id="screen-play" class="screen">
 
-  <!-- Header row -->
-  <div style="display:flex; justify-content:space-between; align-items:center; width:100%;">
-    <div class="game-title" style="font-size:2.4rem; letter-spacing:3px;">LION</div>
-    <div class="score-display">&#10003; <span id="score-display">0</span>/10</div>
+  <div class="play-header">
+    <div class="game-title" style="font-size:2.2rem;letter-spacing:3px;">LION</div>
+    <div style="display:flex;gap:8px;align-items:center;">
+      <div class="level-badge" id="level-badge">Cub</div>
+      <div class="score-display">✓ <span id="score-display">0</span>/<span id="score-goal">10</span></div>
+    </div>
   </div>
 
   <div class="card">
-    <!-- Game SVG lion (colorable) -->
-    <svg id="lion-svg" viewBox="0 0 200 220" xmlns="http://www.w3.org/2000/svg" width="160" height="176">
-      <!-- REGION 1: MANE — colors on wrong #1 (L) -->
-      <ellipse id="region-mane" cx="100" cy="115" rx="72" ry="70"
-        fill="white" stroke="#3B1F0A" stroke-width="2.5"/>
-      <!-- REGION 2: FACE — colors on wrong #2 (I) -->
-      <ellipse id="region-face" cx="100" cy="110" rx="48" ry="45"
-        fill="white" stroke="#3B1F0A" stroke-width="2"/>
-      <!-- REGION 3: EARS — colors on wrong #3 (O) -->
-      <g id="region-ears">
-        <ellipse cx="62" cy="72" rx="14" ry="16"
-          fill="white" stroke="#3B1F0A" stroke-width="2"/>
-        <ellipse cx="138" cy="72" rx="14" ry="16"
-          fill="white" stroke="#3B1F0A" stroke-width="2"/>
-        <ellipse cx="62" cy="73" rx="8" ry="9" fill="white" stroke="#3B1F0A" stroke-width="1"/>
-        <ellipse cx="138" cy="73" rx="8" ry="9" fill="white" stroke="#3B1F0A" stroke-width="1"/>
+
+    <!-- Timer (level 3 only) -->
+    <div class="timer-wrap" id="timer-wrap">
+      <div class="timer-track"><div class="timer-fill" id="timer-fill"></div></div>
+      <div class="timer-label" id="timer-label">30s</div>
+    </div>
+
+    <!-- Colorable lion SVG -->
+    <svg id="lion-svg" viewBox="0 0 200 230" xmlns="http://www.w3.org/2000/svg" width="155" height="179"
+         style="overflow:visible;">
+      <!-- REGION 1: MANE — wrong #1 (L) -->
+      <g id="region-mane">
+        <ellipse cx="100" cy="128" rx="76" ry="73" fill="white" stroke="#3B1F0A" stroke-width="2"/>
+        <ellipse cx="100" cy="124" rx="64" ry="61" fill="white" stroke="#3B1F0A" stroke-width="1.5"/>
       </g>
-      <!-- REGION 4: FEATURES — colors on wrong #4 (N) -->
+      <!-- REGION 2: FACE — wrong #2 (I) -->
+      <g id="region-face">
+        <ellipse cx="100" cy="114" rx="51" ry="49" fill="white" stroke="#3B1F0A" stroke-width="2"/>
+        <ellipse cx="65"  cy="127" rx="18" ry="12" fill="white" stroke="#3B1F0A" stroke-width="1.5"/>
+        <ellipse cx="135" cy="127" rx="18" ry="12" fill="white" stroke="#3B1F0A" stroke-width="1.5"/>
+      </g>
+      <!-- REGION 3: EARS — wrong #3 (O) -->
+      <g id="region-ears">
+        <ellipse cx="55"  cy="60" rx="17" ry="20" fill="white" stroke="#3B1F0A" stroke-width="2"/>
+        <ellipse cx="145" cy="60" rx="17" ry="20" fill="white" stroke="#3B1F0A" stroke-width="2"/>
+        <ellipse cx="55"  cy="61" rx="10" ry="12" fill="white" stroke="#3B1F0A" stroke-width="1"/>
+        <ellipse cx="145" cy="61" rx="10" ry="12" fill="white" stroke="#3B1F0A" stroke-width="1"/>
+        <polygon cx="55"  points="48,42 55,30 62,42" fill="white" stroke="#3B1F0A" stroke-width="1.2"/>
+        <polygon cx="145" points="138,42 145,30 152,42" fill="white" stroke="#3B1F0A" stroke-width="1.2"/>
+      </g>
+      <!-- REGION 4: FEATURES — wrong #4 (N) -->
       <g id="region-features">
-        <ellipse cx="83" cy="103" rx="9" ry="8" fill="white" stroke="#3B1F0A" stroke-width="2"/>
-        <ellipse cx="117" cy="103" rx="9" ry="8" fill="white" stroke="#3B1F0A" stroke-width="2"/>
-        <circle cx="85" cy="104" r="4" fill="white"/>
-        <circle cx="119" cy="104" r="4" fill="white"/>
-        <ellipse cx="100" cy="122" rx="10" ry="7" fill="white" stroke="#3B1F0A" stroke-width="2"/>
-        <path d="M90 130 Q100 140 110 130" fill="none" stroke="#3B1F0A" stroke-width="2" stroke-linecap="round"/>
-        <line x1="100" y1="129" x2="100" y2="134" stroke="#3B1F0A" stroke-width="1.5"/>
-        <circle cx="76" cy="125" r="2" fill="white"/>
-        <circle cx="70" cy="121" r="2" fill="white"/>
-        <circle cx="124" cy="125" r="2" fill="white"/>
-        <circle cx="130" cy="121" r="2" fill="white"/>
+        <path d="M72,99 Q83,93 94,97"   fill="none" stroke="#3B1F0A" stroke-width="3" stroke-linecap="round"/>
+        <path d="M106,97 Q117,93 128,99" fill="none" stroke="#3B1F0A" stroke-width="3" stroke-linecap="round"/>
+        <ellipse cx="83"  cy="108" rx="11" ry="10" fill="white" stroke="#3B1F0A" stroke-width="2"/>
+        <ellipse cx="117" cy="108" rx="11" ry="10" fill="white" stroke="#3B1F0A" stroke-width="2"/>
+        <circle cx="85"  cy="109" r="6"   fill="white"/>
+        <circle cx="119" cy="109" r="6"   fill="white"/>
+        <circle cx="87"  cy="107" r="2.2" fill="white"/>
+        <circle cx="121" cy="107" r="2.2" fill="white"/>
+        <ellipse cx="100" cy="126" rx="12" ry="8" fill="white" stroke="#3B1F0A" stroke-width="2"/>
+        <line x1="100" y1="134" x2="100" y2="140" stroke="#3B1F0A" stroke-width="2"/>
+        <path d="M87,140 Q100,153 113,140" fill="none" stroke="#3B1F0A" stroke-width="2.5" stroke-linecap="round"/>
+        <circle cx="73"  cy="128" r="2.5" fill="white"/>
+        <circle cx="65"  cy="124" r="2.5" fill="white"/>
+        <circle cx="60"  cy="131" r="2.5" fill="white"/>
+        <circle cx="127" cy="128" r="2.5" fill="white"/>
+        <circle cx="135" cy="124" r="2.5" fill="white"/>
+        <circle cx="140" cy="131" r="2.5" fill="white"/>
       </g>
     </svg>
 
-    <!-- L I O N letters -->
-    <div class="lion-letters">
+    <!-- Letters -->
+    <div class="lion-letters" id="lion-letters-row">
       <span class="lion-letter" id="letter-L">L</span>
       <span class="lion-letter" id="letter-I">I</span>
       <span class="lion-letter" id="letter-O">O</span>
@@ -374,86 +451,139 @@
 
     <!-- Input -->
     <div class="input-group">
-      <input
-        type="number"
-        id="answer-input"
-        placeholder="?"
-        autocomplete="off"
-        min="0"
-        max="999"
-      />
+      <input type="number" id="answer-input" placeholder="?" autocomplete="off" min="0" max="9999"/>
       <button class="btn-submit" onclick="submitAnswer()">GO!</button>
     </div>
 
-    <!-- Streak hint -->
-    <div id="streak-hint" style="font-size:0.85rem; color:var(--brown); font-weight:600; min-height:1.2em;"></div>
+    <div class="streak-hint" id="streak-hint"></div>
   </div>
 </div>
 
-<!-- ═══════════════ WINNER OVERLAY ═══════════════ -->
+<!-- ═══════════════════ WINNER OVERLAY ═══════════════════ -->
 <div id="overlay-winner" class="overlay overlay-winner">
   <div class="overlay-text">🎉 WINNER! 🎉</div>
-  <div class="overlay-sub">10 correct — Amazing!</div>
+  <div class="overlay-sub" id="winner-sub">Amazing job!</div>
 </div>
 
-<!-- ═══════════════ LION OVERLAY ═══════════════ -->
+<!-- ═══════════════════ UNLOCK OVERLAY ═══════════════════ -->
+<div id="overlay-unlock" class="overlay overlay-unlock">
+  <div class="overlay-text" style="font-size:3.2rem;">🔓 UNLOCKED!</div>
+  <div class="overlay-sub" id="unlock-sub">Level 2 — Pride</div>
+</div>
+
+<!-- ═══════════════════ LION OVERLAY ═══════════════════ -->
 <div id="overlay-lion" class="overlay overlay-lion">
-  <div class="overlay-text" style="font-family:'Fredoka One',cursive; color:var(--gold);">LION</div>
-  <div class="overlay-sub">4 wrong answers… try again!</div>
+  <div class="overlay-text" style="color:var(--gold);">LION</div>
+  <div class="overlay-sub">Try again!</div>
 </div>
 
 <script>
-/* ────────────────────────────────────────────────
-   STATE
-──────────────────────────────────────────────── */
-const state = {
-  score: 0,             // correct answers (0–10)
-  wrongCount: 0,        // wrong answers (0–4)
-  consecutiveCorrect: 0,
-  currentQuestion: null,
-  phase: 'home',        // 'home' | 'playing' | 'winner' | 'lion'
-  locked: false,        // prevent input during animations
+/* ─────────────────────────────────────────────
+   LEVEL CONFIG
+───────────────────────────────────────────── */
+const LEVELS = {
+  1: { name: 'Cub',             icon: '🦁', stars: '⭐☆☆', questions: 10, maxWrong: 4, timer: 0,  maxNum: 20,  multMax: 0, desc: '+ and − up to 20 · 10 wins' },
+  2: { name: 'Pride',           icon: '🦁🦁', stars: '⭐⭐☆', questions: 12, maxWrong: 4, timer: 0,  maxNum: 100, multMax: 6, desc: '+ − × up to 6 · 12 wins' },
+  3: { name: 'King of Savanna', icon: '👑', stars: '⭐⭐⭐', questions: 15, maxWrong: 3, timer: 30, maxNum: 100, multMax: 6, desc: '× up to 6 · 30s timer · 3 strikes' },
 };
 
-/* ────────────────────────────────────────────────
+/* ─────────────────────────────────────────────
+   STATE
+───────────────────────────────────────────── */
+const state = {
+  level: 1,
+  score: 0,
+  wrongCount: 0,
+  consecutiveCorrect: 0,
+  currentQuestion: null,
+  phase: 'home',
+  locked: false,
+  timeLeft: 0,
+  timerInterval: null,
+};
+
+function getUnlocked() {
+  try { return JSON.parse(localStorage.getItem('lionUnlocked') || '[1]'); }
+  catch { return [1]; }
+}
+function saveUnlocked(arr) {
+  localStorage.setItem('lionUnlocked', JSON.stringify(arr));
+}
+
+/* ─────────────────────────────────────────────
    LION COLORING
-──────────────────────────────────────────────── */
+───────────────────────────────────────────── */
 const REGION_COLORS = {
   'region-mane':     '#E07B2A',
   'region-face':     '#F5A623',
   'region-ears':     '#F5A623',
   'region-features': '#3B1F0A',
 };
-const REGION_ORDER = ['region-mane', 'region-face', 'region-ears', 'region-features'];
+const REGION_ORDER = ['region-mane','region-face','region-ears','region-features'];
 
 function updateLionColor(wrongCount) {
-  REGION_ORDER.forEach((id, index) => {
+  REGION_ORDER.forEach((id, i) => {
     const el = document.getElementById(id);
     if (!el) return;
-    const targets = el.tagName === 'g'
-      ? el.querySelectorAll('ellipse, circle, path, line')
-      : [el];
-    targets.forEach(t => {
-      t.setAttribute('fill', index < wrongCount ? REGION_COLORS[id] : 'white');
-    });
+    const color = i < wrongCount ? REGION_COLORS[id] : 'white';
+    el.querySelectorAll('ellipse, circle, polygon').forEach(t => t.setAttribute('fill', color));
+    // paths with fill="none" (eyebrows, mouth) should stay none
   });
 }
 
-/* ────────────────────────────────────────────────
-   QUESTION GENERATION
-──────────────────────────────────────────────── */
-function rand(min, max) {
-  return Math.floor(Math.random() * (max - min + 1)) + min;
+/* ─────────────────────────────────────────────
+   LEVEL SELECT UI
+───────────────────────────────────────────── */
+function renderLevelCards() {
+  const unlocked = getUnlocked();
+  const list = document.getElementById('level-cards-list');
+  list.innerHTML = '';
+  [1, 2, 3].forEach(n => {
+    const lv = LEVELS[n];
+    const isUnlocked = unlocked.includes(n);
+    const card = document.createElement('div');
+    card.className = 'level-card' + (isUnlocked ? '' : ' locked');
+    card.innerHTML = `
+      <div class="lv-icon">${lv.icon}</div>
+      <div class="lv-info">
+        <div class="lv-name">Level ${n} — ${lv.name}</div>
+        <div class="lv-stars">${lv.stars}</div>
+        <div class="lv-desc">${lv.desc}</div>
+      </div>
+      <button class="lv-btn" ${isUnlocked ? '' : 'disabled'}>${isUnlocked ? 'PLAY' : '🔒'}</button>
+    `;
+    if (isUnlocked) {
+      card.addEventListener('click', () => startGame(n));
+    }
+    list.appendChild(card);
+  });
 }
 
-function generateQuestion(score, consecutiveCorrect) {
-  const difficulty = score;
-  const maxNum = Math.min(10 + difficulty * 9, 100);
+/* ─────────────────────────────────────────────
+   SCREEN
+───────────────────────────────────────────── */
+function showScreen(name) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById('screen-' + name).classList.add('active');
+}
 
-  // 30% chance of multiplication after 5-streak
-  if (consecutiveCorrect >= 5 && Math.random() < 0.3) {
-    const num1 = rand(1, 4);
-    const num2 = rand(1, 4);
+/* ─────────────────────────────────────────────
+   QUESTION GENERATION
+───────────────────────────────────────────── */
+function rand(min, max) { return Math.floor(Math.random() * (max - min + 1)) + min; }
+
+function generateQuestion(level, score, streak) {
+  const lv = LEVELS[level];
+  const difficulty = score;
+  const maxNum = level === 1
+    ? Math.min(5 + difficulty * 2, lv.maxNum)        // 5→20 for Cub
+    : Math.min(10 + difficulty * 6, lv.maxNum);      // 10→100 for Pride/King
+
+  // Multiplication: level 2+ use 30% chance always; level 3 40%
+  const multChance = level === 2 ? 0.30 : level === 3 ? 0.40 : 0;
+  if (lv.multMax > 0 && Math.random() < multChance) {
+    const num1 = rand(2, lv.multMax);
+    const num2 = rand(2, lv.multMax);
     return { num1, operator: '×', num2, answer: num1 * num2 };
   }
 
@@ -464,125 +594,120 @@ function generateQuestion(score, consecutiveCorrect) {
     return { num1, operator, num2, answer: num1 + num2 };
   } else {
     const num1 = rand(0, maxNum);
-    const num2 = rand(0, num1);        // ensure non-negative result
+    const num2 = rand(0, num1);
     return { num1, operator, num2, answer: num1 - num2 };
   }
 }
 
-/* ────────────────────────────────────────────────
-   SCREEN MANAGEMENT
-──────────────────────────────────────────────── */
-function showScreen(name) {
-  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
-  const el = document.getElementById('screen-' + name);
-  if (el) el.classList.add('active');
+/* ─────────────────────────────────────────────
+   TIMER (level 3)
+───────────────────────────────────────────── */
+function startTimer() {
+  stopTimer();
+  const lv = LEVELS[state.level];
+  if (!lv.timer) return;
+  state.timeLeft = lv.timer;
+  updateTimerUI();
+  document.getElementById('timer-wrap').classList.add('on');
+  state.timerInterval = setInterval(() => {
+    state.timeLeft--;
+    updateTimerUI();
+    if (state.timeLeft <= 0) {
+      stopTimer();
+      const input = document.getElementById('answer-input');
+      handleWrong(input);
+    }
+  }, 1000);
 }
 
-/* ────────────────────────────────────────────────
+function stopTimer() {
+  if (state.timerInterval) { clearInterval(state.timerInterval); state.timerInterval = null; }
+}
+
+function updateTimerUI() {
+  const total = LEVELS[state.level].timer || 30;
+  const pct = (state.timeLeft / total) * 100;
+  const fill = document.getElementById('timer-fill');
+  const label = document.getElementById('timer-label');
+  fill.style.width = pct + '%';
+  fill.style.background = state.timeLeft > 15 ? 'var(--green)' : state.timeLeft > 7 ? '#E8A020' : '#C0392B';
+  label.textContent = state.timeLeft + 's';
+}
+
+/* ─────────────────────────────────────────────
    GAME FLOW
-──────────────────────────────────────────────── */
-function startGame() {
+───────────────────────────────────────────── */
+function startGame(level) {
+  state.level = level;
   state.score = 0;
   state.wrongCount = 0;
   state.consecutiveCorrect = 0;
   state.phase = 'playing';
   state.locked = false;
 
+  const lv = LEVELS[level];
+  document.getElementById('level-badge').textContent = lv.name;
+  document.getElementById('score-goal').textContent = lv.questions;
+  document.getElementById('timer-wrap').classList.remove('on');
+
   updateLionColor(0);
   updateLetters(0);
-  updateScore(0);
+  document.getElementById('score-display').textContent = 0;
   loadNextQuestion();
   showScreen('play');
-
-  setTimeout(() => {
-    document.getElementById('answer-input').focus();
-  }, 100);
+  setTimeout(() => document.getElementById('answer-input').focus(), 100);
 }
 
 function loadNextQuestion() {
-  state.currentQuestion = generateQuestion(state.score, state.consecutiveCorrect);
+  state.currentQuestion = generateQuestion(state.level, state.score, state.consecutiveCorrect);
   const { num1, operator, num2 } = state.currentQuestion;
   document.getElementById('equation-display').textContent = `${num1} ${operator} ${num2} = ?`;
   const input = document.getElementById('answer-input');
-  input.value = '';
-  input.className = '';        // clear flash classes
+  input.value = ''; input.className = '';
   updateStreakHint();
-}
-
-function updateScore(score) {
-  document.getElementById('score-display').textContent = score;
+  startTimer();
 }
 
 function updateLetters(wrongCount) {
-  const letters = ['L', 'I', 'O', 'N'];
-  letters.forEach((l, i) => {
-    const el = document.getElementById('letter-' + l);
-    if (i < wrongCount) {
-      el.classList.add('earned');
-    } else {
-      el.classList.remove('earned');
-    }
+  ['L','I','O','N'].forEach((l, i) => {
+    document.getElementById('letter-' + l).classList.toggle('earned', i < wrongCount);
   });
 }
 
 function updateStreakHint() {
   const hint = document.getElementById('streak-hint');
-  const streak = state.consecutiveCorrect;
-  if (streak >= 5) {
-    hint.textContent = `🔥 ${streak} streak — multiplication unlocked!`;
-    hint.style.color = 'var(--orange)';
-  } else if (streak > 0) {
-    hint.textContent = `⭐ ${streak} correct in a row — keep going!`;
-    hint.style.color = 'var(--green)';
-  } else {
-    hint.textContent = '';
-  }
+  const s = state.consecutiveCorrect;
+  if (s >= 5) { hint.textContent = `🔥 ${s} in a row — on fire!`; hint.style.color = 'var(--orange)'; }
+  else if (s > 1) { hint.textContent = `⭐ ${s} correct in a row!`; hint.style.color = 'var(--green)'; }
+  else hint.textContent = '';
 }
 
-/* ────────────────────────────────────────────────
+/* ─────────────────────────────────────────────
    ANSWER SUBMISSION
-──────────────────────────────────────────────── */
+───────────────────────────────────────────── */
 function submitAnswer() {
   if (state.locked || state.phase !== 'playing') return;
-
   const input = document.getElementById('answer-input');
-  const raw = input.value.trim();
-  if (raw === '') return;
-
-  const guess = parseInt(raw, 10);
+  const guess = parseInt(input.value.trim(), 10);
   if (isNaN(guess)) { input.value = ''; return; }
-
-  const correct = state.currentQuestion.answer;
-
-  if (guess === correct) {
-    handleCorrect(input);
-  } else {
-    handleWrong(input);
-  }
+  stopTimer();
+  if (guess === state.currentQuestion.answer) handleCorrect(input);
+  else handleWrong(input);
 }
 
 function handleCorrect(input) {
   state.score++;
   state.consecutiveCorrect++;
-  updateScore(state.score);
-
-  // Flash green
-  input.classList.remove('flash-wrong');
-  void input.offsetWidth; // force reflow
+  document.getElementById('score-display').textContent = state.score;
+  input.classList.remove('flash-wrong'); void input.offsetWidth;
   input.classList.add('flash-correct');
 
-  if (state.score >= 10) {
-    state.phase = 'winner';
-    state.locked = true;
+  if (state.score >= LEVELS[state.level].questions) {
+    state.phase = 'winner'; state.locked = true;
     setTimeout(showWinner, 400);
     return;
   }
-
-  setTimeout(() => {
-    input.classList.remove('flash-correct');
-    loadNextQuestion();
-    input.focus();
-  }, 500);
+  setTimeout(() => { input.classList.remove('flash-correct'); loadNextQuestion(); input.focus(); }, 500);
 }
 
 function handleWrong(input) {
@@ -591,129 +716,119 @@ function handleWrong(input) {
   updateLetters(state.wrongCount);
   updateLionColor(state.wrongCount);
 
-  // Shake + red flash on input
-  input.classList.remove('flash-correct');
-  void input.offsetWidth;
+  input.classList.remove('flash-correct'); void input.offsetWidth;
   input.classList.add('flash-wrong');
 
-  // Shake lion SVG
   const lion = document.getElementById('lion-svg');
-  lion.classList.remove('shake');
-  void lion.offsetWidth;
-  lion.classList.add('shake');
+  lion.classList.remove('shake'); void lion.offsetWidth; lion.classList.add('shake');
 
-  if (state.wrongCount >= 4) {
-    state.phase = 'lion';
-    state.locked = true;
+  if (state.wrongCount >= LEVELS[state.level].maxWrong) {
+    state.phase = 'lion'; state.locked = true;
     setTimeout(showLion, 600);
     return;
   }
-
   setTimeout(() => {
-    input.classList.remove('flash-wrong');
-    lion.classList.remove('shake');
-    loadNextQuestion();
-    input.focus();
-  }, 600);
+    input.classList.remove('flash-wrong'); lion.classList.remove('shake');
+    loadNextQuestion(); input.focus();
+  }, 650);
 }
 
-/* ────────────────────────────────────────────────
-   WIN / LOSS OVERLAYS
-──────────────────────────────────────────────── */
+/* ─────────────────────────────────────────────
+   WIN / LOSS
+───────────────────────────────────────────── */
 function showWinner() {
+  // Check if a new level unlocks
+  const justBeaten = state.level;
+  const nextLevel = justBeaten + 1;
+  const unlocked = getUnlocked();
+  const newUnlock = nextLevel <= 3 && !unlocked.includes(nextLevel);
+  if (newUnlock) { unlocked.push(nextLevel); saveUnlocked(unlocked); }
+
+  document.getElementById('winner-sub').textContent =
+    newUnlock ? `Level ${nextLevel} — ${LEVELS[nextLevel].name} unlocked! 🔓` : 'Amazing! Back to levels…';
   document.getElementById('overlay-winner').classList.add('active');
   startConfetti();
-  let flashes = 0;
-  const txt = document.querySelector('#overlay-winner .overlay-text');
-  const iv = setInterval(() => {
-    txt.style.visibility = txt.style.visibility === 'hidden' ? 'visible' : 'hidden';
-    flashes++;
-    if (flashes >= 6) {
-      clearInterval(iv);
-      txt.style.visibility = 'visible';
-    }
-  }, 500);
+
+  flashEl('#overlay-winner .overlay-text', 3, () => {});
+
   setTimeout(() => {
     stopConfetti();
     document.getElementById('overlay-winner').classList.remove('active');
-    startGame();
-  }, 4500);
+    if (newUnlock) {
+      document.getElementById('unlock-sub').textContent = `Level ${nextLevel} — ${LEVELS[nextLevel].name}`;
+      document.getElementById('overlay-unlock').classList.add('active');
+      setTimeout(() => {
+        document.getElementById('overlay-unlock').classList.remove('active');
+        renderLevelCards();
+        showScreen('home');
+      }, 2500);
+    } else {
+      renderLevelCards();
+      showScreen('home');
+    }
+  }, 4000);
 }
 
 function showLion() {
   document.getElementById('overlay-lion').classList.add('active');
-  const txt = document.querySelector('#overlay-lion .overlay-text');
-  let flashes = 0;
-  const iv = setInterval(() => {
-    txt.style.visibility = txt.style.visibility === 'hidden' ? 'visible' : 'hidden';
-    flashes++;
-    if (flashes >= 6) {
-      clearInterval(iv);
-      txt.style.visibility = 'visible';
-    }
-  }, 500);
+  flashEl('#overlay-lion .overlay-text', 3, () => {});
   setTimeout(() => {
     document.getElementById('overlay-lion').classList.remove('active');
-    startGame();
-  }, 3500);
+    renderLevelCards();
+    showScreen('home');
+  }, 3200);
 }
 
-/* ────────────────────────────────────────────────
+function flashEl(selector, times, cb) {
+  const el = document.querySelector(selector);
+  let n = 0;
+  const iv = setInterval(() => {
+    el.style.visibility = el.style.visibility === 'hidden' ? 'visible' : 'hidden';
+    if (++n >= times * 2) { clearInterval(iv); el.style.visibility = 'visible'; cb(); }
+  }, 500);
+}
+
+/* ─────────────────────────────────────────────
    CONFETTI
-──────────────────────────────────────────────── */
-const CONFETTI_COLORS = ['#F5A623','#E07B2A','#4A7C2F','#87CEEB','#fff','#ff6b6b','#ffe66d'];
-let confettiPieces = [];
-let confettiAnim = null;
+───────────────────────────────────────────── */
+const CC = ['#F5A623','#E07B2A','#4A7C2F','#87CEEB','#fff','#ff6b6b','#ffe66d'];
+let cPieces = [], cAnim = null;
 
 function startConfetti() {
-  const canvas = document.getElementById('confetti-canvas');
-  canvas.width  = window.innerWidth;
-  canvas.height = window.innerHeight;
-  confettiPieces = Array.from({ length: 120 }, () => ({
-    x: Math.random() * canvas.width,
-    y: Math.random() * -canvas.height * 0.5,
-    r: rand(5, 12),
-    color: CONFETTI_COLORS[rand(0, CONFETTI_COLORS.length - 1)],
-    speed: 2 + Math.random() * 3,
-    angle: Math.random() * 2 * Math.PI,
-    spin: (Math.random() - 0.5) * 0.2,
-    drift: (Math.random() - 0.5) * 1.5,
+  const cv = document.getElementById('confetti-canvas');
+  cv.width = innerWidth; cv.height = innerHeight;
+  cPieces = Array.from({ length: 130 }, () => ({
+    x: Math.random() * cv.width, y: Math.random() * -cv.height * 0.5,
+    r: rand(5, 12), color: CC[rand(0, CC.length - 1)],
+    speed: 2 + Math.random() * 3, angle: Math.random() * 6.28,
+    spin: (Math.random() - 0.5) * 0.2, drift: (Math.random() - 0.5) * 1.5,
   }));
-  const ctx = canvas.getContext('2d');
-  function draw() {
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-    confettiPieces.forEach(p => {
-      ctx.save();
-      ctx.translate(p.x, p.y);
-      ctx.rotate(p.angle);
-      ctx.fillStyle = p.color;
-      ctx.fillRect(-p.r / 2, -p.r / 2, p.r, p.r * 0.55);
-      ctx.restore();
-      p.y += p.speed;
-      p.x += p.drift;
-      p.angle += p.spin;
-      if (p.y > canvas.height + 20) {
-        p.y = -20;
-        p.x = Math.random() * canvas.width;
-      }
+  const ctx = cv.getContext('2d');
+  (function draw() {
+    ctx.clearRect(0, 0, cv.width, cv.height);
+    cPieces.forEach(p => {
+      ctx.save(); ctx.translate(p.x, p.y); ctx.rotate(p.angle);
+      ctx.fillStyle = p.color; ctx.fillRect(-p.r/2, -p.r/2, p.r, p.r * 0.55); ctx.restore();
+      p.y += p.speed; p.x += p.drift; p.angle += p.spin;
+      if (p.y > cv.height + 20) { p.y = -20; p.x = Math.random() * cv.width; }
     });
-    confettiAnim = requestAnimationFrame(draw);
-  }
-  draw();
+    cAnim = requestAnimationFrame(draw);
+  })();
 }
-
 function stopConfetti() {
-  if (confettiAnim) { cancelAnimationFrame(confettiAnim); confettiAnim = null; }
-  const canvas = document.getElementById('confetti-canvas');
-  canvas.getContext('2d').clearRect(0, 0, canvas.width, canvas.height);
+  if (cAnim) { cancelAnimationFrame(cAnim); cAnim = null; }
+  const cv = document.getElementById('confetti-canvas');
+  cv.getContext('2d').clearRect(0, 0, cv.width, cv.height);
 }
 
-/* ────────────────────────────────────────────────
-   KEYBOARD — Enter key submits
-──────────────────────────────────────────────── */
+/* ─────────────────────────────────────────────
+   INIT
+───────────────────────────────────────────── */
 document.getElementById('answer-input').addEventListener('keydown', e => {
   if (e.key === 'Enter') submitAnswer();
 });
+
+renderLevelCards();
 </script>
 </body>
 </html>
