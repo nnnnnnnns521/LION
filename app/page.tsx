@@ -304,10 +304,7 @@ export default function GuestFormPage() {
               >
                 {submitting ? 'Locking in your predictions...' : 'Submit My Predictions ★'}
               </button>
-              <p className="text-white/60 text-xs mt-4">
-                ❀ Your predictions are stored safely for the big reveal ❀
-              </p>
-              <p className="text-white/50 text-xs mt-2">Any predictions shared with the group will be shared anonymously.</p>
+              <p className="text-white/50 text-xs mt-4">Any predictions shared with the group will be shared anonymously.</p>
             </div>
           </form>
         )}
