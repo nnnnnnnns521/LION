@@ -15,11 +15,28 @@ const AT_80_OPTIONS = [
   'Other',
 ]
 
+function Flower({ size = 'sm' }: { size?: 'sm' | 'lg' }) {
+  const s = size === 'lg' ? 18 : 13
+  return (
+    <svg width={s} height={s} viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <circle cx="12" cy="12" r="3" fill="#C9A227" />
+      {[0,60,120,180,240,300].map(deg => (
+        <ellipse key={deg} cx="12" cy="5" rx="2.5" ry="4" fill="currentColor"
+          transform={`rotate(${deg} 12 12)`} />
+      ))}
+    </svg>
+  )
+}
+
 function Divider() {
   return (
-    <div className="flex items-center gap-3 my-8">
+    <div className="flex items-center gap-2 my-8">
       <div className="gold-divider flex-1" />
-      <span className="text-[#C9A227] text-lg">❀</span>
+      <span className="text-[#E8637A]"><Flower /></span>
+      <span className="text-[#C9A227] text-sm">★</span>
+      <span className="text-[#F4A0B0]"><Flower /></span>
+      <span className="text-[#C9A227] text-sm">★</span>
+      <span className="text-[#E8637A]"><Flower /></span>
       <div className="gold-divider flex-1" />
     </div>
   )
@@ -83,7 +100,13 @@ export default function GuestFormPage() {
       <div className="max-w-2xl mx-auto">
         {/* Header */}
         <div className="text-center mb-10">
-          <div className="text-white text-2xl mb-2">❀ ★ ❀</div>
+          <div className="flex items-center justify-center gap-2 mb-2">
+            <span className="text-[#F4A0B0]"><Flower size="lg" /></span>
+            <span className="text-white text-lg">★</span>
+            <span className="text-[#E8637A]"><Flower size="lg" /></span>
+            <span className="text-white text-lg">★</span>
+            <span className="text-[#F4A0B0]"><Flower size="lg" /></span>
+          </div>
           <h1 className="heading-font text-5xl md:text-6xl font-bold text-white mb-3 leading-tight">
             To the Next 40
           </h1>
@@ -114,7 +137,13 @@ export default function GuestFormPage() {
             <p className="text-gray-600 text-lg">
               See you in 40 years.
             </p>
-            <div className="mt-6 text-[#C9A227] text-xl">★ ❀ ★</div>
+            <div className="flex items-center justify-center gap-2 mt-6">
+              <span className="text-[#E8637A]"><Flower size="lg" /></span>
+              <span className="text-[#C9A227]">★</span>
+              <span className="text-[#F4A0B0]"><Flower size="lg" /></span>
+              <span className="text-[#C9A227]">★</span>
+              <span className="text-[#E8637A]"><Flower size="lg" /></span>
+            </div>
           </div>
         ) : (
           <form onSubmit={handleSubmit} className="space-y-0">
