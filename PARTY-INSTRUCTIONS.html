@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>To the Next 40 — Party Instructions</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Inter:wght@300;400;500;600&display=swap');
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: #FDF6EC;
+      color: #1a1a1a;
+      max-width: 700px;
+      margin: 0 auto;
+      padding: 40px 24px;
+    }
+
+    h1 {
+      font-family: 'Playfair Display', serif;
+      font-size: 2.8rem;
+      color: #F72585;
+      text-align: center;
+      margin-bottom: 4px;
+    }
+
+    .subtitle {
+      font-family: 'Playfair Display', serif;
+      font-style: italic;
+      text-align: center;
+      color: #C9A227;
+      font-size: 1.1rem;
+      margin-bottom: 40px;
+    }
+
+    .divider {
+      text-align: center;
+      color: #C9A227;
+      font-size: 1.2rem;
+      margin: 28px 0;
+      letter-spacing: 8px;
+    }
+
+    .card {
+      background: white;
+      border: 1px solid rgba(201, 162, 39, 0.35);
+      border-radius: 14px;
+      padding: 28px 32px;
+      margin-bottom: 24px;
+      box-shadow: 0 2px 16px rgba(0,0,0,0.07);
+    }
+
+    h2 {
+      font-family: 'Playfair Display', serif;
+      color: #F72585;
+      font-size: 1.3rem;
+      margin: 0 0 12px 0;
+    }
+
+    .label {
+      font-size: 0.75rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: #C9A227;
+      margin-bottom: 4px;
+    }
+
+    .link {
+      font-size: 1.1rem;
+      color: #F72585;
+      font-weight: 600;
+      word-break: break-all;
+    }
+
+    .password {
+      display: inline-block;
+      background: #F72585;
+      color: white;
+      font-family: monospace;
+      font-size: 1.2rem;
+      padding: 6px 18px;
+      border-radius: 8px;
+      letter-spacing: 0.05em;
+      margin-top: 4px;
+    }
+
+    .note {
+      font-size: 0.88rem;
+      color: #777;
+      margin-top: 10px;
+      line-height: 1.6;
+    }
+
+    .qr-container {
+      text-align: center;
+      padding: 12px 0 4px;
+    }
+
+    .qr-container img {
+      border: 3px solid #C9A227;
+      border-radius: 12px;
+      padding: 12px;
+      background: white;
+    }
+
+    .qr-label {
+      margin-top: 12px;
+      font-size: 0.9rem;
+      color: #888;
+    }
+
+    footer {
+      text-align: center;
+      color: #C9A227;
+      font-family: 'Playfair Display', serif;
+      font-style: italic;
+      margin-top: 40px;
+      font-size: 1rem;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>To the Next 40</h1>
+  <div class="subtitle">Nicole's Birthday Predictions — Host Instructions</div>
+
+  <div class="divider">★ ❀ ★</div>
+
+  <div class="card">
+    <h2>🎉 Guest Form</h2>
+    <div class="label">Share this link (or use the QR code below)</div>
+    <div class="link">https://to-the-next-40.vercel.app</div>
+    <p class="note">Guests scan the QR code or visit this link to submit their predictions. The form closes automatically at <strong>10:00pm ET on June 6, 2026</strong>.</p>
+  </div>
+
+  <div class="card">
+    <h2>🔐 Admin — See All Responses</h2>
+    <div class="label">Your private link</div>
+    <div class="link">https://to-the-next-40.vercel.app/admin</div>
+    <div class="label" style="margin-top:14px;">Password</div>
+    <div class="password">nextforty</div>
+    <p class="note">Go here during or after the party to read responses aloud. You'll also find a "Copy shareable link" button to send guests the results page afterward.</p>
+  </div>
+
+  <div class="card">
+    <h2>📊 Results Page (share after the party)</h2>
+    <div class="label">Shareable link — public but not linked anywhere</div>
+    <div class="link">https://to-the-next-40.vercel.app/results</div>
+    <p class="note">Send this to guests after the party so they can relive all the predictions. Groups answers by question.</p>
+  </div>
+
+  <div class="divider">★ ❀ ★</div>
+
+  <div class="card">
+    <h2>📱 QR Code for Tables</h2>
+    <div class="qr-container">
+      <div id="qr"></div>
+      <p class="qr-label">Scan to submit predictions · to-the-next-40.vercel.app</p>
+    </div>
+    <p class="note">Print this page or screenshot the QR code to drop into a Canva table card. You can also visit <strong>to-the-next-40.vercel.app/qr</strong> for a full-screen version.</p>
+  </div>
+
+  <footer>See you in 40 years. 🥂</footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/qrcode/build/qrcode.min.js"></script>
+  <script>
+    QRCode.toCanvas(document.createElement('canvas'), 'https://to-the-next-40.vercel.app', {
+      width: 220,
+      margin: 2,
+      color: { dark: '#1a1a1a', light: '#ffffff' }
+    }, function(err, canvas) {
+      if (!err) document.getElementById('qr').appendChild(canvas)
+    })
+  </script>
+
+</body>
+</html>
