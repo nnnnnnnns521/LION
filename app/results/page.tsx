@@ -69,7 +69,7 @@ export default function ResultsPage() {
                   <div className="card">
                     <div className="flex items-start gap-3 mb-5">
                       <span className="text-2xl">{q.emoji}</span>
-                      <h2 className="heading-font text-xl font-bold text-[#F72585] leading-tight">
+                      <h2 className="heading-font text-xl font-bold text-[#C2185B] leading-tight">
                         {q.label}
                       </h2>
                     </div>

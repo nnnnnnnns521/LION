@@ -8,7 +8,7 @@ module.exports = {
   theme: {
     extend: {
       colors: {
-        'hot-pink': '#F72585',
+        'hot-pink': '#C2185B',
         'coral': '#FF6B6B',
         'gold': '#C9A227',
         'off-white': '#FDF6EC',

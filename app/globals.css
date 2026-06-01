@@ -5,7 +5,7 @@
 @tailwind utilities;
 
 :root {
-  --hot-pink: #F72585;
+  --hot-pink: #C2185B;
   --coral: #FF6B6B;
   --gold: #C9A227;
   --white: #FFFFFF;
@@ -22,7 +22,7 @@ body {
 }
 
 .bg-pattern {
-  background-color: #F72585;
+  background-color: #C2185B;
   background-image: url("data:image/svg+xml,%3Csvg width='40' height='40' viewBox='0 0 40 40' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M20 0L40 20L20 40L0 20Z' fill='none' stroke='%23C9A227' stroke-width='0.5' opacity='0.3'/%3E%3Cpath d='M20 5L35 20L20 35L5 20Z' fill='none' stroke='%23C9A227' stroke-width='0.3' opacity='0.2'/%3E%3C/svg%3E");
 }
 
@@ -43,9 +43,9 @@ body {
 }
 
 .btn-primary {
-  background-color: #F72585;
+  background-color: #C2185B;
   color: #FFFFFF;
-  border: 2px solid #F72585;
+  border: 2px solid #C2185B;
   border-radius: 8px;
   padding: 0.75rem 2rem;
   font-family: 'Inter', sans-serif;
@@ -66,7 +66,7 @@ body {
 
 .btn-secondary {
   background-color: #FFFFFF;
-  color: #F72585;
+  color: #C2185B;
   border: 2px solid #C9A227;
   border-radius: 8px;
   padding: 0.75rem 2rem;

@@ -58,7 +58,7 @@ export default function AdminPage() {
         <div className="card w-full max-w-sm">
           <div className="text-center mb-6">
             <div className="text-[#C9A227] text-2xl mb-2">★ ❀ ★</div>
-            <h1 className="heading-font text-3xl font-bold text-[#F72585]">Admin Access</h1>
+            <h1 className="heading-font text-3xl font-bold text-[#C2185B]">Admin Access</h1>
           </div>
           <form onSubmit={handleLogin} className="space-y-4">
             <input
@@ -92,7 +92,7 @@ export default function AdminPage() {
 
         <div className="card mb-6 flex flex-col sm:flex-row items-center gap-4 justify-between">
           <div>
-            <p className="heading-font font-semibold text-[#F72585]">Shareable Results Link</p>
+            <p className="heading-font font-semibold text-[#C2185B]">Shareable Results Link</p>
             <p className="text-gray-500 text-sm">/results — public but obscure</p>
           </div>
           <button onClick={copyLink} className="btn-secondary whitespace-nowrap">
@@ -114,7 +114,7 @@ export default function AdminPage() {
           {responses.map((r, idx) => (
             <div key={r.id} className="card">
               <div className="flex items-center justify-between mb-4">
-                <h2 className="heading-font text-2xl font-bold text-[#F72585]">
+                <h2 className="heading-font text-2xl font-bold text-[#C2185B]">
                   Guest #{responses.length - idx}
                 </h2>
                 <span className="text-gray-400 text-sm">

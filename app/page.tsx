@@ -121,7 +121,7 @@ export default function GuestFormPage() {
         {isPastDeadline ? (
           <div className="card text-center">
             <div className="text-5xl mb-4">🎉</div>
-            <h2 className="heading-font text-3xl font-bold text-[#F72585] mb-3">
+            <h2 className="heading-font text-3xl font-bold text-[#C2185B] mb-3">
               The predictions are in!
             </h2>
             <p className="text-gray-600 text-lg">
@@ -131,7 +131,7 @@ export default function GuestFormPage() {
         ) : submitted ? (
           <div className="card text-center">
             <div className="text-5xl mb-4">🥂</div>
-            <h2 className="heading-font text-3xl font-bold text-[#F72585] mb-3">
+            <h2 className="heading-font text-3xl font-bold text-[#C2185B] mb-3">
               Your predictions are locked in.
             </h2>
             <p className="text-gray-600 text-lg">
@@ -261,9 +261,9 @@ export default function GuestFormPage() {
                           handleChange('q7_at_80_other', '')
                         }
                       }}
-                      className="mt-1 accent-[#F72585]"
+                      className="mt-1 accent-[#C2185B]"
                     />
-                    <span className="text-gray-700 group-hover:text-[#F72585] transition-colors text-sm leading-relaxed">
+                    <span className="text-gray-700 group-hover:text-[#C2185B] transition-colors text-sm leading-relaxed">
                       {option}
                     </span>
                   </label>
